@@ -1279,22 +1279,6 @@ module.exports = {
 			// Call options
 			route.callOptions = opts.callOptions;
 
-			// Create body parsers as middlewares
-			if (opts.bodyParsers == null || opts.bodyParsers === true) {
-				// Set default JSON body-parser
-				opts.bodyParsers = {
-					json: true
-				};
-			}
-			if (opts.bodyParsers) {
-				const bps = opts.bodyParsers;
-				Object.keys(bps).forEach(key => {
-					const opts = _.isObject(bps[key]) ? bps[key] : undefined;
-					if (bps[key] !== false && key in bodyParser)
-						route.middlewares.push(bodyParser[key](opts));
-				});
-			}
-
 			// Logging
 			route.logging = opts.logging != null ? opts.logging : true;
 
@@ -1312,6 +1296,22 @@ module.exports = {
 			if (mw.length > 0) {
 				route.middlewares.push(...mw);
 				this.logRouteRegistration(`  Registered ${mw.length} middlewares.`);
+			}
+
+			// Create body parsers as middlewares
+			if (opts.bodyParsers == null || opts.bodyParsers === true) {
+				// Set default JSON body-parser
+				opts.bodyParsers = {
+					json: true
+				};
+			}
+			if (opts.bodyParsers) {
+				const bps = opts.bodyParsers;
+				Object.keys(bps).forEach(key => {
+					const opts = _.isObject(bps[key]) ? bps[key] : undefined;
+					if (bps[key] !== false && key in bodyParser)
+						route.middlewares.push(bodyParser[key](opts));
+				});
 			}
 
 			// CORS
