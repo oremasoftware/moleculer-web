@@ -311,6 +311,7 @@ describe("Test responses", () => {
 			.get("/test/customStatus")
 			.then(res => {
 				expect(res.statusCode).toBe(201);
+				expect(res.headers["location"]).toBe("/new/entity");
 				expect(res.res.statusMessage).toEqual("Entity created");
 				expect(res.text).toEqual("");
 			});
@@ -5260,4 +5261,48 @@ describe("Test named routes with same path", () => {
 			});
 	});
 
+});
+
+describe("Test no qs options forwarding", () => {
+	let broker;
+	let server;
+
+	beforeAll(() => {
+		[broker, , server] = setup();
+		return broker.start();
+	});
+
+	afterAll(() => broker.stop());
+
+	it("doesn't split query string", () => {
+		return request(server)
+			.get("/test/greeter?name=Alice,Bob")
+			.then(res => {
+				expect(res.body).toBe("Hello Alice,Bob");
+			});
+	});
+});
+
+describe("Test qs options forwarding", () => {
+	let broker;
+	let server;
+
+	beforeAll(() => {
+		[broker, , server] = setup({
+			qsOptions: {
+				comma: true
+			},
+		});
+		return broker.start();
+	});
+
+	afterAll(() => broker.stop());
+
+	it("splits comma separated query param", () => {
+		return request(server)
+			.get("/test/queryParamsArray?names=Alice,Bob")
+			.then(r => {
+				expect(r.body).toStrictEqual(["Alice", "Bob"]);
+			});
+	});
 });

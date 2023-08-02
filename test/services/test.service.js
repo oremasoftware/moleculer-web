@@ -219,6 +219,7 @@ module.exports = {
 		customStatus: {
 			handler(ctx) {
 				ctx.meta.$statusCode = 201;
+				ctx.meta.$location = "/new/entity";
 				ctx.meta.$statusMessage = "Entity created";
 			}
 		},
@@ -293,6 +294,19 @@ module.exports = {
 			},
 			handler(ctx) {
 				return `Hello ${ctx.params.name}`;
+			}
+		},
+
+		queryParamsArray: {
+			rest: {
+				method: "GET",
+				path: "/queryParamsArray"
+			},
+			params: {
+				names: "array"
+			},
+			handler(ctx) {
+				return ctx.params.names;
 			}
 		},
 	}

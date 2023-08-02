@@ -708,7 +708,7 @@ module.exports = {
 			}
 
 			// Redirect
-			if (res.statusCode >= 300 && res.statusCode < 400 && res.statusCode !== 304) {
+			if (res.statusCode==201 || (res.statusCode >= 300 && res.statusCode < 400 && res.statusCode !== 304)) {
 				const location = ctx.meta.$location;
 				/* istanbul ignore next */
 				if (!location) {
@@ -953,7 +953,7 @@ module.exports = {
 			let query = {};
 			const questionIdx = req.url.indexOf("?", 1);
 			if (questionIdx !== -1) {
-				query = queryString.parse(req.url.substring(questionIdx + 1));
+				query = queryString.parse(req.url.substring(questionIdx + 1), this.settings.qsOptions);
 				url = req.url.substring(0, questionIdx);
 			}
 			return { query, url };
